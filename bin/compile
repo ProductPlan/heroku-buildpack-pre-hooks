@@ -31,6 +31,8 @@ echo "{ \"action\": \"custom-build-started\", \"source_blob\": { \"version:\": \
 signature=`echo /tmp/payload.json | openssl sha256 -hmac "key" | awk '{print $2;}'`
 
 # Send hook
+echo "Sending payload to ${HALLMONITOR_HEROKU_ENDPOINT}:"
+cat /tmp/payload.json
 curl -X POST ${HALLMONITOR_HEROKU_ENDPOINT} -H "Content-Type: application/json"  -H heroku-webhook-hmac-sha256: ${signature} -d @/tmp/payload.json
 
 echo "-----> pre-hooks done"
