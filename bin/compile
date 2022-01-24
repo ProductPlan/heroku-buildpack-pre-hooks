@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# bin/compile <build-dir> <cache-dir> <env-dir>
+
+# Parameters
+BUILD_DIR=$1
+ENV_DIR=$3
+
+# Fail fast
+set -e
+
+export_env_dir() {
+  env_dir=$1
+  acceptlist_regex=${2:-^(HALLMONITOR_HEROKU_SECRET|HALLMONITOR_HEROKU_ENDPOINT)}
+  denylist_regex=${3:-'^(PATH|GIT_DIR|CPATH|CPPATH|LD_PRELOAD|LIBRARY_PATH)$'}
+  if [ -d "$env_dir" ]; then
+    for e in $(ls $env_dir); do
+      echo "$e" | grep -E "$acceptlist_regex" | grep -qvE "$denylist_regex" &&
+      export "$e=$(cat $env_dir/$e)"
+      :
+    done
+  fi
+}
+
+export_env_dir $ENV_DIR
+
+# Build payload
+# { "action": "custom-build-started", "source_blob": { "version": "xxx" } }
+echo "{ \"action\": \"custom-build-started\", \"source_blob\": { \"version:\": \"${SOURCE_VERSION}\" } }" > /tmp/payload.json 
+
+# Calculate signature
+signature=`echo /tmp/payload.json | openssl sha256 -hmac "key" | awk '{print $2;}'`
+
+# Send hook
+curl -X POST ${HALLMONITOR_HEROKU_ENDPOINT} -H "Content-Type: application/json"  -H heroku-webhook-hmac-sha256: ${signature} -d @/tmp/payload.json
+
+echo "-----> pre-hooks done"
