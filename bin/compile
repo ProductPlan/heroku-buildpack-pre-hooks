@@ -25,14 +25,13 @@ export_env_dir $ENV_DIR
 
 # Build payload
 # { "action": "custom-build-started", "source_blob": { "version": "xxx" } }
-echo "{ \"action\": \"custom-build-started\", \"source_blob\": { \"version:\": \"${SOURCE_VERSION}\" } }" > /tmp/payload.json 
+payload="{\"action\":\"custom-build-started\",\"source_blob\":{\"version:\":\"${SOURCE_VERSION}\"}}"
 
 # Calculate signature
-signature=`cat /tmp/payload.json | openssl sha256 -hmac $HALLMONITOR_HEROKU_SECRET -binary | base64`
+signature=`echo -n $payload | openssl sha256 -hmac $HALLMONITOR_HEROKU_SECRET -binary | base64`
 
 # Send hook
 echo "Sending payload to ${HALLMONITOR_HEROKU_ENDPOINT}:"
-cat /tmp/payload.json
-curl -vX POST ${HALLMONITOR_HEROKU_ENDPOINT} -H "Content-Type: application/json" -H "heroku-webhook-hmac-sha256: ${signature}" -d @/tmp/payload.json
-
+echo $payload
+curl -v ${HALLMONITOR_HEROKU_ENDPOINT} -H "Content-Type: application/json" -H "heroku-webhook-hmac-sha256: ${signature}" -d $payload
 echo "-----> pre-hooks done"
