@@ -33,5 +33,5 @@ signature=`echo -n $payload | openssl sha256 -hmac $HALLMONITOR_HEROKU_SECRET -b
 # Send hook
 echo "Sending payload to ${HALLMONITOR_HEROKU_ENDPOINT}:"
 echo $payload
-curl -v ${HALLMONITOR_HEROKU_ENDPOINT} -H "Content-Type: application/json" -H "heroku-webhook-hmac-sha256: ${signature}" -d $payload
+curl -v ${HALLMONITOR_HEROKU_ENDPOINT} -H "Content-Type: application/json" -H "heroku-webhook-hmac-sha256: ${signature}" -d "$payload"
 echo "-----> pre-hooks done"
