@@ -25,7 +25,7 @@ export_env_dir $ENV_DIR
 
 # Build payload
 # { "action": "custom-build-started", "data": { "source_blob": { "version": "xxx" } }, "updated_at": "xxx" }
-payload="{\"action\":\"custom-build-started\",\"data\":{\"source_blob\":{\"version:\":\"${SOURCE_VERSION}\"}},\"updated_at\":\"`date`\"}"
+payload="{\"action\":\"custom-build-started\",\"data\":{\"source_blob\":{\"version\":\"${SOURCE_VERSION}\"}},\"updated_at\":\"`date`\"}"
 
 # Calculate signature
 signature=`echo -n $payload | openssl sha256 -hmac $HALLMONITOR_HEROKU_SECRET -binary | base64`
