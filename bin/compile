@@ -24,9 +24,9 @@ export_env_dir() {
 export_env_dir $ENV_DIR
 
 # Build payload
-# { "action": "custom-build-started", "data": { "source_blob": { "version": "xxx" }, "slug": { "commit": "xxx" }, "created_at": "xxx", "updated_at": "xxx" } }
+# { "action": "custom-build-started", "data": { "source_blob": { "version": "xxx" }, "slug": { "commit": "xxx" }, "created_at": "xxx", "updated_at": "xxx", app: { name: "xxx" } } }
 date > /tmp/created_at.date
-payload="{'action':'custom-build-started','data':{'source_blob':{'version':'${SOURCE_VERSION}'},'slug':{'commit':'${SOURCE_VERSION}'},'created_at':'`cat /tmp/created_at.date`','updated_at':'`cat /tmp/created_at.date`'}}"
+payload="{'action':'custom-build-started','data':{'source_blob':{'version':'${SOURCE_VERSION}'},'slug':{'commit':'${SOURCE_VERSION}'},'created_at':'`cat /tmp/created_at.date`','updated_at':'`cat /tmp/created_at.date`', 'app': {'name': '${HEROKU_APP_NAME}'}}}"
 payload=`echo $payload | sed "s/'/\"/g"`
 
 # Calculate signature
