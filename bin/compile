@@ -10,7 +10,7 @@ set -e
 
 export_env_dir() {
   env_dir=$1
-  acceptlist_regex=${2:-^(HALLMONITOR_HEROKU_SECRET|HALLMONITOR_HEROKU_ENDPOINT)}
+  acceptlist_regex=${2:-^(HALLMONITOR_HEROKU_SECRET|HALLMONITOR_HEROKU_ENDPOINT|HEROKU_APP_NAME)}
   denylist_regex=${3:-'^(PATH|GIT_DIR|CPATH|CPPATH|LD_PRELOAD|LIBRARY_PATH)$'}
   if [ -d "$env_dir" ]; then
     for e in $(ls $env_dir); do
